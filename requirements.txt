@@ -1,0 +1,49 @@
+# DeepSeek 余额小鲸鱼挂件（whale_widget.py）依赖清单
+#
+# 安装：
+#   python -m venv .venv
+#   .venv\Scripts\python.exe -m pip install -r requirements.txt
+#
+# 运行：
+#   .venv\Scripts\pythonw.exe whale_widget.py
+#
+# 环境要求：Windows + Python 3.14（3.10 及以上应也可用；tkinter 随官方
+# Python 安装包自带，无需额外安装）。已实测 Python 3.14.7。
+#
+# 说明：以下为直接依赖，版本为实际验证通过的版本。
+# 系统托盘图标（左键切换悬浮窗、右键菜单：余额 / 音效 / 关闭）
+pystray==0.19.5
+
+# 图像处理：鲸鱼贴图合成、气泡绘制、rua.gif 逐帧解码、托盘图标缩放
+pillow==12.3.0
+
+# 余额接口 https://api.deepseek.com/user/balance 的 HTTP 请求
+requests==2.34.2
+
+# ---------------------------------------------------------------------------
+# 打包成单文件 exe 时需要（仅打包用，日常运行不需要；版本随 pip 最新稳定版即可）：
+#   .venv\Scripts\python.exe -m pip install pyinstaller
+#
+# 打包命令（在项目根目录执行，输出 dist\DSHWhale.exe）：
+#   .venv\Scripts\pyinstaller.exe --noconfirm --clean --onefile --windowed
+#     --name DSHWhale --icon assets\DSniang1.png --add-data "assets;assets"
+#     whale_widget.py
+#
+# 打包后：exe 首次运行会在自己所在目录自动生成 config.ini 与 status.json，
+# 可以直接双击运行（删除 config.ini 会重新生成一份默认配置）。
+pyinstaller
+
+# ---------------------------------------------------------------------------
+# 以下为上面三个包自动带入的间接依赖（一般无需手动指定，此处仅列出以固定版本）：
+#   certifi==2026.7.22
+#   charset-normalizer==3.5.1
+#   idna==3.19
+#   six==1.17.0          # pystray 依赖
+#   urllib3==2.7.0       # requests 依赖
+#
+# 标准库依赖（无需安装）：
+#   tkinter（悬浮窗）、ctypes（工作区尺寸 / MCI 音频）、configparser（config.ini）、
+#   json（status.json）、threading、queue、random、math、datetime、winsound（降级音频）
+#
+# 音频播放说明：优先使用 Windows 自带的多媒体接口 MCI（winmm.dll，通过 ctypes 调用，
+# 支持调节响度）；MCI 不可用时回退到标准库 winsound（仅支持 wav，且响度参数不生效）。
